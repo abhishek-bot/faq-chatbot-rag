@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FAQ Chatbot Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: auto; }
+    .user { color: blue; margin: 5px 0; }
+    .bot { color: green; margin: 5px 0; }
+    #input { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>FAQ Chatbot Demo</h2>
+  <div id="chat"></div>
+  <div id="input">
+    <input type="text" id="query" placeholder="Type your question..." size="50">
+    <button onclick="sendQuery()">Ask</button>
+  </div>
+
+  <script>
+    async function sendQuery() {
+      const query = document.getElementById("query").value;
+      if (!query) return;
+
+      // Display user message
+      const chat = document.getElementById("chat");
+      chat.innerHTML += `<div class="user"><b>You:</b> ${query}</div>`;
+
+      // Call backend
+      const response = await fetch(`/ask?query=${encodeURIComponent(query)}`);
+      const data = await response.json();
+
+      // Display bot response
+      chat.innerHTML += `<div class="bot"><b>Bot:</b> ${data.response}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+
+      // Clear input
+      document.getElementById("query").value = "";
+    }
+  </script>
+</body>
+</html>
