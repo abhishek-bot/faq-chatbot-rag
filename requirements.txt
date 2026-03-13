@@ -1,8 +1,0 @@
-fastapi   # FastAPI is a modern, fast (high-performance) web framework for building APIs with Python 3.6+ based on standard Python type hints.
-uvicorn   # Uvicorn is a lightning-fast ASGI server implementation, using `uvloop` and `httptools`.
-transformers   # Transformers is a Hugging Face library for state-of-the-art natural language processing.
-sentencepiece   # SentencePiece is a text tokenizer and detokenizer designed for Neural Network-based text generation.
-torch     # PyTorch is an open-source machine learning library based on the Torch library, used for applications such as computer vision and natural language processing.
-python-dotenv   # Python library for reading key-value pairs from .env files
-rapidfuzz   # RapidFuzz is a fast string matching library for Python, providing functions for fuzzy string matching and similarity scoring.
-#sqlite3  # Built-in with Python but included here for clarity; SQLite is a C library that provides a lightweight disk-based database that doesn’t require a separate server process and allows access to the database using a nonstandard variant of the SQL query language.

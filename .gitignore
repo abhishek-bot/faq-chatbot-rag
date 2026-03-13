@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/*
+*.pyc
+*.pyo
+*.pyd
+
+# Distribution / packaging
+venv/
+.env/
+
+# Database files
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Hugging Face Spaces specific files
+/.huggingface/
+
+# VS Code settings
+.vscode/
