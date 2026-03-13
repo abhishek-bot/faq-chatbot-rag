@@ -1,0 +1,18 @@
+# Web Framework
+fastapi
+uvicorn
+
+# Vector search
+faiss-cpu
+
+# Embeddings
+sentence-transformers
+
+# Hugging Face Models
+transformers
+torch
+
+# utilities
+numpy
+python-dotenv
+
