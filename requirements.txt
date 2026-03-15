@@ -9,7 +9,8 @@ faiss-cpu
 sentence-transformers
 
 # Hugging Face Models
-transformers
+transformers>=4.36.0
+
 torch
 
 # utilities

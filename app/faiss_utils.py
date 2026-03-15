@@ -34,7 +34,7 @@ def build_index(faqs,model_name="sentence-transformers/all-MiniLM-L6-v2"):
 
     return index, model
 
-def search_index(query,index,model,faqs,k=1):
+def search_index(query,index,model,faqs,k=1, threshold=0.6):
     """ Search the FAISS index for the most relevant FAQ question.
     Args:
         query (str): User query to search for.
@@ -53,7 +53,11 @@ def search_index(query,index,model,faqs,k=1):
     # D = distances, I = indices of the closest matches
     D, I = index.search(np.array(query_embedding), k)
 
+    similarity = 1 / (1 + D[0][0])  # Convert L2 distance to similarity score (simple transformation)
+
+    if similarity < threshold:
+        return None
     # Retrieve the corresponding FAQ items based on the best matches
     results = [faqs[i] for i in I[0]]
-
+    print(f"results: {results}")
     return results

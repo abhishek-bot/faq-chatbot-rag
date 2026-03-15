@@ -1,8 +1,9 @@
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-# Load the Hugging Face text-to-text generation pipeline with a suitable model (e.g., T5 or GPT-3)
+# Load the Hugging Face text generation pipeline with a suitable model (e.g., T5 or GPT-3)
 # Flan-T5-Large is a strong general-purpose model for Q&A and instruction following tasks
-generator = pipeline("text2text-generation", model="google/flan-t5-Large")
+tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-Large")
+model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-Large")
 
 def generate_answer(query: str, context: str) -> str:
     """
@@ -18,14 +19,22 @@ def generate_answer(query: str, context: str) -> str:
     # - Supply the FAQ context
     # - Ask the model to generate a clear answer
 
-    prompt = f"Question: {query}\nContext: {context}\nAnswer:"
+    prompt = (
+        f"Paraphrase the context into a clear, user‑friendly answer. "
+        f"Do not copy it word‑for‑word.\n\n"
+        f"Question: {query}\n"
+        f"Context: {context}\n"
+        f"Paraphrased Answer:"
+    )
 
-    # Generate the answer using the model
-    response = generator(
-        prompt,
-        max_length=150, # Limit the length of the generated answer
-        num_return_sequences=1, # We only want one answer
-        temperature=0.7, # Control the creativity of the output(lower is more focused)
-        )[0]["generated_text"]
-    
-    return response
+    inputs = tokenizer(prompt, return_tensors="pt")
+    outputs = model.generate(
+        **inputs,
+        max_new_tokens=250,
+        do_sample=True,
+        temperature=0.9,
+        top_p=0.9,
+        repetition_penalty=2.0,
+)
+    generated_answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return generated_answer.strip()

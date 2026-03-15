@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import json
+import os
 
 # import our helper modules
 from app.faiss_utils import build_index, search_index
@@ -32,13 +33,21 @@ def ask(query: Query):
     """
     # Step 1: Semantic search
     results = search_index(query.question, index, model, faqs, k=1)
+    if results is None:
+        log_unmatched_query(query.question)
+        return {
+            "query": query.question,
+            "matched_question": None,
+            "faq_answer": None,
+            "generated_answer": "No relevant FAQ found. Please try rephrasing your question."
+            }
     best_match = results[0]
 
     # Step 2: FAQ answer
     faq_answer = best_match["answer"]
 
     # Step 3: Enriched answer via Flan-T5
-    enriched = generate_answer(query.question, faq_answer)
+    enriched = generate_answer(best_match["question"], faq_answer)
 
     # Step 4: Return structured response
     return {
@@ -52,3 +61,23 @@ def ask(query: Query):
 def health():
     """Simple health check endpoint."""
     return {"status": "ok"}
+
+def log_unmatched_query(query: str):
+    """Log unmatched queries for future analysis and improvement."""
+    entry = {"query": query}
+    os.makedirs(os.path.dirname("data/unmatched_queries.json"), exist_ok=True)
+
+    if os.path.exists("data/unmatched_queries.json"):
+        with open("data/unmatched_queries.json", "r+", encoding="utf-8") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = []
+            data.append(entry)
+            f.seek(0)
+            json.dump(data, f, indent=2)
+            f.truncate()
+    else:
+        with open("data/unmatched_queries.json", "w", encoding="utf-8") as f:
+            json.dump([entry], f, indent=2)
+
