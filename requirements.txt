@@ -17,3 +17,6 @@ torch
 numpy
 python-dotenv
 
+# for ui
+streamlit
+

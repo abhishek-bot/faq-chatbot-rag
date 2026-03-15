@@ -1,6 +1,11 @@
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
+import logging
+
+logging.basicConfig(level=logging.INFO,format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
+
 
 def build_index(faqs,model_name="sentence-transformers/all-MiniLM-L6-v2"):
     """ Build a FAISS index from FAQ questions.
@@ -31,7 +36,7 @@ def build_index(faqs,model_name="sentence-transformers/all-MiniLM-L6-v2"):
 
     # Add all question embeddings to the FAISS index
     index.add(np.array(ebeddings))
-
+    logger.info(f"Built FAISS index with {len(faqs)} FAQ questions and embedding dimension {dimension}")
     return index, model
 
 def search_index(query,index,model,faqs,k=1, threshold=0.6):
@@ -59,5 +64,5 @@ def search_index(query,index,model,faqs,k=1, threshold=0.6):
         return None
     # Retrieve the corresponding FAQ items based on the best matches
     results = [faqs[i] for i in I[0]]
-    print(f"results: {results}")
+    logger.info(f"Search results for query: {query} - Similarity: {similarity:.4f} - Best match: {results[0]['question']}")
     return results
